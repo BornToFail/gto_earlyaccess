@@ -22,7 +22,7 @@ public abstract class Bullet {
 	}
 
 	public void render(Graphics g){
-		g.drawImage(bullet, (int)x, (int)y, null);
+		g.drawImage(bullet, (int)x, (int)y-17, null);
 
 		
 	}

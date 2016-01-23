@@ -662,19 +662,19 @@ public class Game extends Canvas implements Runnable {
 			}	
 			else if (key == KeyEvent.VK_SPACE && !shooting){
 				if(Player.selectedCharacter == 1){
-					Controller.projectiles.add(new OttoBullet(p.getX()-5,p.getY(), this));
-					Controller.projectiles.add(new OttoBullet(p.getX()+5,p.getY(), this));
+					Controller.projectiles.add(new OttoBullet(p.getX()-5,p.getY()-17, this));
+					Controller.projectiles.add(new OttoBullet(p.getX()+5,p.getY()-17, this));
 
 				}
 				if(Player.selectedCharacter == 2){
-					Controller.projectiles.add(new FennelBullet(p.getX()-5,p.getY(), this));
-					Controller.projectiles.add(new FennelBullet(p.getX()+5,p.getY(), this));
+					Controller.projectiles.add(new FennelBullet(p.getX()-5,p.getY()-17, this));
+					Controller.projectiles.add(new FennelBullet(p.getX()+5,p.getY()-17, this));
 
 				}
 				if(Player.selectedCharacter == 3){
 					Controller.projectiles.add(new PlayerBullet(p.getX(),p.getY(), this));
-					Controller.projectiles.add(new PerditusBullet1(p.getX()-5,p.getY(), this));
-					Controller.projectiles.add(new PerditusBullet2(p.getX()+5,p.getY(), this));
+					Controller.projectiles.add(new PerditusBullet1(p.getX()-5,p.getY()-17, this));
+					Controller.projectiles.add(new PerditusBullet2(p.getX()+5,p.getY()-17, this));
 
 				}
 				shooting = true;
