@@ -53,6 +53,10 @@ public class MouseInput implements MouseListener {
 					Game.State = Game.STATE.SELECT;
 				}
 			}
+			/**
+			 * Checks if the player selects the medium survival button and sets the difficulty 
+			 * accordingly
+			 */
 			if(mx >= 400 && mx <= 551){
 				if(my >= 125 && my <= 146){
 					//Pressed "MEDIUM SURVIVAL" button
@@ -68,6 +72,10 @@ public class MouseInput implements MouseListener {
 
 				}
 			}
+			/**
+			 * Checks if the player selects the medium story button and starts up the unfinished
+			 * cutscene
+			 */
 			if(mx >= 100 && mx <= 151){
 				if(my >= 125 && my <= 146){
 					//Pressed "MEDIUM STORY" button
@@ -77,9 +85,12 @@ public class MouseInput implements MouseListener {
 
 				}
 			}
+			/**
+			 * Checks if the player selects the hard survival button and sets the difficulty 
+			 * accordingly
+			 */
 			if(mx >= 400 && mx <= 551){
 				if(my >= 225 && my <= 246){
-					//Pressed "HARD SURVIVAL" button
 					System.out.println("Iwork");
 					Game.difficulty = 1;
 					Game.setDifficulty();

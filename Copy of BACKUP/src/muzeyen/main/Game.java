@@ -318,7 +318,7 @@ public class Game extends Canvas implements Runnable {
 				//				passiveSpawner.get(i).setxSpeed(Math.random()*16-8);
 				//				passiveSpawner.get(i).setySpeed(2);
 			}
-			for (int j = 0; j < 5;j++){
+			for (int j = 0; j < spawnRate;j++){
 				aggressiveSpawner.add(new AttackingEnemy(randSpawn,0,generator.nextInt(7)-3,generator.nextInt(3)+1,GAME_SIZE,HEIGHT));
 
 			}
@@ -344,11 +344,11 @@ public class Game extends Canvas implements Runnable {
 			spawnRate =1;
 		}
 		else if (difficulty == 1){
-			spawnRate = 10;
+			spawnRate = 5;
 			Player.bombs = 1;
 		}
-		else if (difficulty == 3){
-			spawnRate = 20;
+		else if (difficulty == 2){
+			spawnRate = 5;
 			Player.lives = 1;
 			Player.bombs = 0;
 			for(int i = 0; i < passiveSpawner.size(); i++){
@@ -424,6 +424,7 @@ public class Game extends Canvas implements Runnable {
 			render();
 			frames++;
 			if (State == STATE.GAME){
+				increaseDifficulty();
 				Boss.GoBoss();
 				p.playercollisionTest(passiveSpawner, Controller.eprojectiles);
 				p.playercollisionTest2(aggressiveSpawner);
@@ -439,7 +440,6 @@ public class Game extends Canvas implements Runnable {
 						}
 					}
 				}
-				//				checkEnemyBorders();
 				checkLives();
 				for(int i = 0; i < passiveSpawner.size();i++){
 					if(passiveSpawner.get(i).bulletcollisionTest(Controller.pprojectiles)){
@@ -475,7 +475,7 @@ public class Game extends Canvas implements Runnable {
 			p.tick();
 			c.tick();
 			hudTimer++;
-			if ((hudTimer % 200)==0){
+			if ((hudTimer %300)==0){
 				//	if (passiveSpawner.size() 10){
 				genericEnemyBehaviour();
 				//	}
@@ -484,18 +484,22 @@ public class Game extends Canvas implements Runnable {
 		}else if(State == STATE.PAUSE){
 			//paused
 		}
-		increaseDifficulty();
+
 	}
+	/**
+	 *Checks if the time is an interval of 5, if it is, the amount of enemies spawned in increases
+	 */
 	private void increaseDifficulty(){
-		if ((hudTimer%5)  == 0){
+		if ((hudTimer%500)  == 0){
+			if(difficulty == 0){
+				spawnRate += 3;
+				System.out.println("spawnrate"+spawnRate);
+			}
 			if(difficulty == 1){
 				spawnRate += 5;
 			}
-			if(difficulty == 2){
+			if(difficulty == 3){
 				spawnRate += 10;
-			}
-			if(difficulty == 2){
-				spawnRate += 25;
 			}
 
 		}
