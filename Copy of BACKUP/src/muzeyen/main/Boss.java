@@ -4,6 +4,9 @@ import java.awt.Color;
 import java.awt.Graphics;
 
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+
+import muzeyen.main.Game.STATE;
 
 
 /**
@@ -16,16 +19,16 @@ import java.awt.image.BufferedImage;
  */
 
 
-public class Boss implements Runnable {
+public class Boss /*implements Runnable,*/ extends MovingObject {
 	/**
 	 * 
 	 */
 	private double x;
 	private double y;
-	private double r;
+	private static double r;
 	
-	private double xSpeed;
-	private double ySpeed;
+	private static double xSpeed;
+	private static double ySpeed;
 	
 	private int left;
 	private int right;
@@ -34,27 +37,61 @@ public class Boss implements Runnable {
 	
 	private boolean move;
 	
+	
 	private static BufferedImage boss;
 	
+	public static boolean seeBoss = false;
+	public static boolean shooting = false;
 	
-	public Boss (double level) {
-		
-		if (level <= 4){
-			r = 0.8;
-		}
-		else if (level <= 7){
-			r = 3.2;
-		}
-		else if (level > 8){
-			r = 5;
-		}
-		setXSpeed(xSpeed, r);
-		setYSpeed(ySpeed, r);
+	/*public Boss() {
+			
+	}
+*/	
+	public Boss (double x, double y, double xSpeed, double ySpeed, int right, int top) {
+		super (x,y,xSpeed,ySpeed,right,top);
 	}
 	
-	public static void setSprite(){
+	
+	public static void GoBoss(){
+		Difficulty();
+		setXSpeed(1, 0.5);
+		setYSpeed(1, 0.5);
+		setSprite(seeBoss);
+		/*while (Game.State == STATE.GAME){
+			FireAway(Game.hudTimer);
+		}*/
+		
+	}
+	
+	
+	
+	public static void Difficulty(){
+		/*The difficulty method is used to 
+		 * determine the speeds of the boss
+		 * Uses Intensity method to determine 
+		 * the rate at which the speeds are
+		 * multiplied.
+		 */
+		double level = (HUD.score)/1000; 
+		for (int i=1; i<=100; i++){
+			if (level==i){
+				r = (i*(0.624));
+				setXSpeed(1, r);
+				setYSpeed(1, r);
+			}
+		}
+	}
+			
+	public static void setSprite(boolean sB){
 		SpriteSheet ss = new SpriteSheet(Game.getSpriteSheet());
-		boss = ss.grabImage(1, 4, 32, 32);
+		if (sB = false){
+			boss = ss.grabImage(10, 10, 32, 32);
+		}
+		else if (sB = true){
+			boss = ss.grabImage(1, 4, 32, 32);
+		}
+		
+		
 	}
 	
 	public void tick(){
@@ -63,47 +100,77 @@ public class Boss implements Runnable {
 	}
 	
 	public void render(Graphics g) {
-		g.drawImage(boss, /*(int)getX(), (int)getY()*/200, 200, null);
+		g.drawImage(boss,200, 200, null);
 	}
 	
 	public double getX(){
 		return x;
 	}
+	
 	public double getY(){
 		return y;
 	}
+	
 	public void setX(double x){
 		this.x = x;
 	}
+	
 	public void setY(double y){
 		this.y = y;
 	}
 	
-	public double getXSpeed(){
+	public static double getXSpeed(){
 		return xSpeed;
 	}
 	
-	public double getYSpeed(){
+	public static double getYSpeed(){
 		return ySpeed;
 	}
 	
-	public void setXSpeed(double xSpeed, double rate){
-		this.xSpeed = xSpeed*rate;
-	}
-	public void setYSpeed(double ySpeed, double rate){
-		this.ySpeed = ySpeed*rate;
+	public static void setXSpeed(double xSpeed, double rate){
+		xSpeed = xSpeed*rate;
 	}
 	
-	
-	private void Shooting(double speed){
-		//If boss shoots, player freezes for 2 seconds
-		/*For shooting
-		 * Loop that detects increasing angles of some
-		 * kind and shoots bullets every x degrees.
-		 * Bullets travel in straight lines.
-		 */
+	public static void setYSpeed(double ySpeed, double rate){
+		ySpeed = ySpeed*rate;
 	}
 	
+	
+	private static void FireAway(){
+		
+		/*if (shooting = true){
+			Player.setVelX((Player.velX)*0.2);
+			Player.setVelY((Player.velY)*0.2);			
+		}*/
+		
+		
+	}
+	
+	public void BossHit(ArrayList <Bullet> Bullets){
+		for(int j = 0; j< Controller.pprojectiles.size(); j++){
+			double distance = Math.sqrt(Math.pow(Bullets.get(j).getX()- this.getX(),2) + Math.pow(this.getY()-Bullets.get(j).getY(),2));
+			if (distance < 8){
+				//Game.passiveSpawner.remove(i);
+				Controller.pprojectiles.remove(j);
+				System.out.print("Boss hit");
+				HUD.score += 10;
+			}
+		}
+		FireAway();
+	}
+	
+	public void wallCollision(){
+		if (this.getX() >= 400 )
+			setXSpeed(xSpeed, -1);
+		if (this.getX() <= 0 )
+			setXSpeed(xSpeed, -1);
+		if (this.getY() <= 0){
+			setYSpeed(ySpeed, -1);
+		}
+		
+	}
+	
+		
 	public void run() {
 		while (move) {
 			x += xSpeed;
@@ -124,4 +191,18 @@ public class Boss implements Runnable {
 			}			
 		}
 	}
+
+	@Override
+	public void animateOneStep() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void draw(Graphics g) {
+		// TODO Auto-generated method stub
+		
+	}
 }
+
+//Boss Behavior Game Class Line 155 & 191

@@ -160,7 +160,8 @@ public class Game extends Canvas implements Runnable {
 	private static BufferedImage highScoresBG = null;
 	private static BufferedImage highScoresTitle= null;
 	private static BufferedImage clouds = null;
-
+	
+	public static Boss b;
 	public int cloudsX = 10;
 	public int cloudsY= 0;
 	private String[] tempScore = new String[5];
@@ -241,7 +242,7 @@ public class Game extends Canvas implements Runnable {
 
 		p = new Player(300,400, 1 ,this); //initializes player with x-cord and y-cord 200 and the state of the player sprite\
 		c = new Controller(this);
-
+		b = new Boss(200, 200, 1, 1, 480, 0);
 		testC = new Controller(this);
 		menu = new Menu();
 		Music.playMenuMusic();
@@ -325,6 +326,13 @@ public class Game extends Canvas implements Runnable {
 
 	}
 	/**
+	 * Spawns in the boss
+	 */
+	public void BossBehaviour(){
+		Boss.GoBoss(); //let it rip
+			
+	}
+	/**
 	 * Allows the game to check the player-chosen difficulty and sets multiple values including:
 	 * -The enemy spawnRate
 	 * -The player's amount of bombs
@@ -399,6 +407,7 @@ public class Game extends Canvas implements Runnable {
 		int updates = 0;
 		int frames = 0;
 		long timer = System.currentTimeMillis();	
+		BossBehaviour();
 		if (Player.selectedCharacter == 2){
 			p.setVelX(2);
 			p.setVelY(2);
@@ -415,6 +424,7 @@ public class Game extends Canvas implements Runnable {
 			render();
 			frames++;
 			if (State == STATE.GAME){
+				Boss.GoBoss();
 				p.playercollisionTest(passiveSpawner, Controller.eprojectiles);
 				p.playercollisionTest2(aggressiveSpawner);
 
@@ -529,6 +539,7 @@ public class Game extends Canvas implements Runnable {
 			}
 			p.render(g);
 			c.render(g);
+			b.render(g);
 			testC.render(g);
 
 		}else if (State == STATE.CUTSCENE_1){
