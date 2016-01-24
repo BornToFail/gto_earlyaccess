@@ -7,7 +7,7 @@ package muzeyen.main;
  * @author jam
  *
  */
-public class FennelBullet extends Bullet {
+public class FennelBullet extends PlayerBullet {
 
 	/**
 	 * @param x

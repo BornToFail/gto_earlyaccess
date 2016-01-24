@@ -1,6 +1,6 @@
 package muzeyen.main;
 
-public class PhasersOfDeath extends Bullet {
+public class PhasersOfDeath extends EnemyBullet {
 
 	public PhasersOfDeath(double x, double y, Game game) {
 		super(x, y, game);

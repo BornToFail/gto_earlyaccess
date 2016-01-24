@@ -7,7 +7,7 @@ package muzeyen.main;
  * @author jam
  *
  */
-public class PerditusBullet2 extends Bullet {
+public class PerditusBullet2 extends PlayerBullet {
 	public PerditusBullet2(double x, double y, Game game) {
 		super(x, y, game);
 		// TODO Auto-generated constructor stub

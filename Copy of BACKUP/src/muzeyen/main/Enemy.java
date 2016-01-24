@@ -14,7 +14,7 @@ public class Enemy extends MovingObject {
 		super (x,y,xSpeed,ySpeed,right,bottom);
 		
 	}
-	
+
 	public void setSprite(int x, int y, int sizex, int sizey){
 		SpriteSheet ss = new SpriteSheet(Game.getSpriteSheet());
 		enemy = ss.grabImage(x, y, sizex, sizey);
@@ -25,13 +25,13 @@ public class Enemy extends MovingObject {
 	}
 
 
-	public boolean bulletcollisionTest(ArrayList <Bullet> bullets){
+	public boolean bulletcollisionTest(ArrayList<PlayerBullet> pprojectiles){
 
-		for(int j = 0; j< bullets.size(); j++){
-			double distance = Math.sqrt(Math.pow(bullets.get(j).getX()- this.getX(),2) + Math.pow(this.getY()-bullets.get(j).getY(),2));
+		for(int j = 0; j< pprojectiles.size(); j++){
+			double distance = Math.sqrt(Math.pow(pprojectiles.get(j).getX()- this.getX(),2) + Math.pow(this.getY()-pprojectiles.get(j).getY(),2));
 			if (distance < 8){
 
-				bullets.remove(j);
+				pprojectiles.remove(j);
 				System.out.print("Enemy hit");
 				if (Game.sounds == true){
 					Music.playEDeath();

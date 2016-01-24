@@ -35,8 +35,11 @@ public class Player {
 		//received from getter method in Game class
 
 	}
-
-	public void playercollisionTest(ArrayList <Enemy> passiveSpawner, ArrayList <Bullet> projectiles){
+	/**
+	 * When called, it tests if the player collides with an enemy or a bullet. If it does then
+	 * it will remove said enemy or bullet.
+	 */
+	public void playercollisionTest(ArrayList <Enemy> passiveSpawner, ArrayList<EnemyBullet> eprojectiles){
 
 		if (cooldown == false){
 			for (int i = 0; i<Game.passiveSpawner.size() && cooldown == false; i++){
@@ -49,17 +52,17 @@ public class Player {
 					cooldown = true;
 				}
 			}
-			for (int i = 0; i<Controller.projectiles.size() && cooldown == false; i++){
-				double distance = Math.sqrt(Math.pow(this.getX()- projectiles.get(i).getX(),2) + Math.pow(this.getY()-projectiles.get(i).getY(),2));
-					if (distance < 16){
-						timeOfDeath = System.currentTimeMillis();
-						this.lives --;
-						this.blinking= true;
-						projectiles.remove(i);
-						cooldown = true;
-					}
+			for (int i = 0; i<Controller.eprojectiles.size() && cooldown == false; i++){
+				double distance = Math.sqrt(Math.pow(this.getX()- eprojectiles.get(i).getX(),2) + Math.pow(this.getY()-eprojectiles.get(i).getY(),2));
+				if (distance < 16){
+					timeOfDeath = System.currentTimeMillis();
+					this.lives --;
+					this.blinking= true;
+					eprojectiles.remove(i);
+					cooldown = true;
 				}
-			
+			}
+
 		}
 
 
@@ -73,7 +76,32 @@ public class Player {
 		}
 
 	}
+	public void playercollisionTest2(ArrayList <Enemy> aggressiveSpawner){
+		if (cooldown == false){
+			for (int i = 0; i<Game.aggressiveSpawner.size() && cooldown == false; i++){
+				double distance = Math.sqrt(Math.pow(this.getX()- aggressiveSpawner.get(i).getX(),2) + Math.pow(this.getY()-aggressiveSpawner.get(i).getY(),2));
+				if (distance < 16){
+					timeOfDeath = System.currentTimeMillis();
+					this.lives --;
+					this.blinking= true;
+					aggressiveSpawner.remove(i);
+					cooldown = true;
+				}
+			}
 
+		}
+
+
+		else{
+
+			if (System.currentTimeMillis()- timeOfDeath > 3000){
+				Player.blinking = false;
+				cooldown = false;
+				System.out.println( "cooldown is up");
+			}
+		}
+
+	}
 
 	public static void setSprite(){
 
@@ -166,5 +194,6 @@ public class Player {
 	public void setVelY(double velY){
 		this.velY = velY;
 	}
+
 
 }

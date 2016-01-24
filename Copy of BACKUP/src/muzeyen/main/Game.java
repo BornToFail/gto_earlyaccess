@@ -138,7 +138,7 @@ public class Game extends Canvas implements Runnable {
 		 */
 		G_ERROR
 	}
-	
+
 	public static STATE State = STATE.MENU;
 
 	private static BufferedImage image = new BufferedImage(WIDTH,HEIGHT,BufferedImage.TYPE_INT_RGB); //buffers window
@@ -190,6 +190,9 @@ public class Game extends Canvas implements Runnable {
 	static ArrayList<Enemy> aggressiveSpawner = new ArrayList<Enemy>();
 
 	//initialize
+	/**
+	 * Initializes the program
+	 */
 	public void init(){
 		requestFocus(); //makes it so user doesn't have to press game to begin playing when it launces
 		BufferedImageLoader loader = new BufferedImageLoader();
@@ -248,7 +251,9 @@ public class Game extends Canvas implements Runnable {
 	}
 
 
-	//starts up initialized thread
+	/**
+	 * Starts up an initilized thread
+	 */
 	private synchronized void start(){
 		if (running)
 			return;
@@ -286,10 +291,13 @@ public class Game extends Canvas implements Runnable {
 					break;
 				}
 			}
-			for(int i = 0; i < Controller.projectiles.size(); i++){
-				Controller.projectiles.remove(i);
+			for(int i = 0; i < Controller.eprojectiles.size(); i++){
+				Controller.eprojectiles.remove(i);
 			}
-		
+			for(int i = 0; i < Controller.pprojectiles.size(); i++){
+				Controller.pprojectiles.remove(i);
+			}
+
 			Game.State = Game.STATE.GAMEOVER;
 			setDifficulty();
 			Player.blinking = false;
@@ -297,6 +305,10 @@ public class Game extends Canvas implements Runnable {
 			Game.p.setY(400);
 		}
 	}
+	/**
+	 * Lets the game spawn in enemies when called.
+	 * Adds the enemies to the passiveSpawner or aggressiveSpawner arraylists
+	 */
 	public static void genericEnemyBehaviour(){
 		if(State == STATE.GAME ){
 			for (int i=0;i<spawnRate;i++){	
@@ -312,6 +324,12 @@ public class Game extends Canvas implements Runnable {
 		}
 
 	}
+	/**
+	 * Allows the game to check the player-chosen difficulty and sets multiple values including:
+	 * -The enemy spawnRate
+	 * -The player's amount of bombs
+	 * -The player's amount of lives
+	 */
 	public static void setDifficulty(){
 		if (difficulty == 0){
 
@@ -332,14 +350,15 @@ public class Game extends Canvas implements Runnable {
 	}
 
 
-	//	public void checkEnemyBorders(){
-	//		for (int i = 0; i < passiveSpawner.size(); i++){
-	//			if(passiveSpawner.get(i).getX() <= 0 ||passiveSpawner.get(i).getX()  >= 500)
-	//				passiveSpawner.get(i).setxSpeed(MovingObject.xSpeed*= -1); 
-	//		}
-	//	}
-
-	@SuppressWarnings("unchecked")
+	/**
+	 * When called, this method will allow new highscores to be added to the text file "HighScore"
+	 * It will prompt the player to enter their name
+	 * If the player tries to cancel the prompt, it will automatically save as "John_Doe"
+	 * Otherwise, it will not allow the player to save a name with whitespace (as it messes up the
+	 * saving file)
+	 * Once it gets all the needed information it will save to "highscore.txt" with the values of
+	 * the player's score, the players name and the character they played as.
+	 */
 	public void addHighScore(){
 		gtoHighScores.remove(0);
 		String name = "Player";
@@ -348,7 +367,7 @@ public class Game extends Canvas implements Runnable {
 			whitespace = false;
 			name = JOptionPane.showInputDialog(null,"Please enter your name: ","You have gotten a HighScore!", JOptionPane.ERROR_MESSAGE);
 			if (name == null)
-				name = "Player";
+				name = "John_Doe";
 			for (int i = 0; i < name.length(); i ++){
 				if(Character.isWhitespace(name.charAt(i))){
 					whitespace = true;
@@ -396,14 +415,16 @@ public class Game extends Canvas implements Runnable {
 			render();
 			frames++;
 			if (State == STATE.GAME){
-				p.playercollisionTest(passiveSpawner, Controller.projectiles);
+				p.playercollisionTest(passiveSpawner, Controller.eprojectiles);
+				p.playercollisionTest2(aggressiveSpawner);
+
 				for(int i = 0; i < aggressiveSpawner.size(); i++){
 					if (((AttackingEnemy) aggressiveSpawner.get(i)).checkPosition(p)){
 						if (difficulty == 3){
-							Controller.projectiles.add(new PhasersOfDeath(aggressiveSpawner.get(i).getX(),aggressiveSpawner.get(i).getY(),this));
+							Controller.eprojectiles.add(new PhasersOfDeath(aggressiveSpawner.get(i).getX(),aggressiveSpawner.get(i).getY(),this));
 						}
 						else{
-							Controller.projectiles.add(new EnemyBullet(aggressiveSpawner.get(i).getX(),aggressiveSpawner.get(i).getY(),this));
+							Controller.eprojectiles.add(new EnemyBullet(aggressiveSpawner.get(i).getX(),aggressiveSpawner.get(i).getY(),this));
 							System.out.println("enemy is sentinent");
 						}
 					}
@@ -411,8 +432,13 @@ public class Game extends Canvas implements Runnable {
 				//				checkEnemyBorders();
 				checkLives();
 				for(int i = 0; i < passiveSpawner.size();i++){
-					if(passiveSpawner.get(i).bulletcollisionTest(Controller.projectiles)){
+					if(passiveSpawner.get(i).bulletcollisionTest(Controller.pprojectiles)){
 						passiveSpawner.remove(i);
+					}
+				}
+				for(int i = 0; i < aggressiveSpawner.size();i++){
+					if(aggressiveSpawner.get(i).bulletcollisionTest(Controller.pprojectiles)){
+						aggressiveSpawner.remove(i);
 					}
 				}
 				//Problematic
@@ -431,15 +457,14 @@ public class Game extends Canvas implements Runnable {
 		stop();
 	}
 
-	//everything that updates
+	/**
+	 * Tick allows everything to update
+	 */	
 	private void tick(){
 		if (State == STATE.GAME){
 			p.tick();
 			c.tick();
 			hudTimer++;
-			if (hudTimer == 10){
-				spawnRate += 5;
-			}
 			if ((hudTimer % 200)==0){
 				//	if (passiveSpawner.size() 10){
 				genericEnemyBehaviour();
@@ -449,9 +474,26 @@ public class Game extends Canvas implements Runnable {
 		}else if(State == STATE.PAUSE){
 			//paused
 		}
+		increaseDifficulty();
 	}
+	private void increaseDifficulty(){
+		if ((hudTimer%5)  == 0){
+			if(difficulty == 1){
+				spawnRate += 5;
+			}
+			if(difficulty == 2){
+				spawnRate += 10;
+			}
+			if(difficulty == 2){
+				spawnRate += 25;
+			}
 
-	//everything that renders
+		}
+	}
+	/**
+	 * Render is a method to allow everything on-screen to, well, render.
+	 * It will check what state the game is in and render accordingly.
+	 */
 	private void render (){
 
 		BufferStrategy bs = this.getBufferStrategy(); //handles buffering behind the scenes, this refers to canvas
@@ -479,10 +521,12 @@ public class Game extends Canvas implements Runnable {
 			for (int i = 0; i < aggressiveSpawner.size(); i++){
 				aggressiveSpawner.get(i).render(g);
 			}
-			for (int i = 0; i < Controller.projectiles.size(); i++){
-				Controller.projectiles.get(i).render(g);
+			for (int i = 0; i < Controller.pprojectiles.size(); i++){
+				Controller.pprojectiles.get(i).render(g);
 			}
-
+			for (int i = 0; i < Controller.eprojectiles.size(); i++){
+				Controller.eprojectiles.get(i).render(g);
+			}
 			p.render(g);
 			c.render(g);
 			testC.render(g);
@@ -608,12 +652,19 @@ public class Game extends Canvas implements Runnable {
 		g.dispose();
 		bs.show();
 	}
-
+	/**
+	 * This handles all of the actions done with key presses. 
+	 * For example, if the program is in the "GAME" state, it will allow the player press an arrow key to move.
+	 */
 	public void keyPressed(KeyEvent e){
 		int key = e.getKeyCode();
 
 
 		if (State == STATE.GAME){
+			/**
+			 * If the player presses the right arrow key, the selected character will move right with 
+			 * their specified velocity
+			 */
 			if (key == KeyEvent.VK_RIGHT){
 				if(Player.selectedCharacter == 1){
 					p.setVelX(5);	
@@ -626,6 +677,10 @@ public class Game extends Canvas implements Runnable {
 				}
 				Player.tiltRight();
 			}
+			/**
+			 * If the player presses the left arrow key, the selected character will move left with 
+			 * their specified velocity
+			 */
 			else if (key == KeyEvent.VK_LEFT){
 				if(Player.selectedCharacter == 1){
 					p.setVelX(-5);	
@@ -638,6 +693,10 @@ public class Game extends Canvas implements Runnable {
 				}
 				Player.tiltLeft();
 			}
+			/**
+			 * If the player presses the down arrow key, the selected character will move down with
+			 * their specified velocity
+			 */
 			else if (key == KeyEvent.VK_DOWN){
 				if(Player.selectedCharacter == 1){
 					p.setVelY(5);	
@@ -649,6 +708,10 @@ public class Game extends Canvas implements Runnable {
 					p.setVelY(3);	
 				}
 			}
+			/**
+			 * If the player presses the up arrow key, the selected character will move up with
+			 * their specified velocity
+			 */
 			else if (key == KeyEvent.VK_UP){
 				if(Player.selectedCharacter == 1){
 					p.setVelY(-5);	
@@ -660,21 +723,25 @@ public class Game extends Canvas implements Runnable {
 					p.setVelY(-3);	
 				}
 			}	
+			/**
+			 * If the player presses the space bar, the selected character will shoot with their
+			 * specified bullets, one at a time.
+			 */
 			else if (key == KeyEvent.VK_SPACE && !shooting){
 				if(Player.selectedCharacter == 1){
-					Controller.projectiles.add(new OttoBullet(p.getX()-5,p.getY()-17, this));
-					Controller.projectiles.add(new OttoBullet(p.getX()+5,p.getY()-17, this));
+					Controller.pprojectiles.add(new OttoBullet(p.getX()-5,p.getY()-17, this));
+					Controller.pprojectiles.add(new OttoBullet(p.getX()+5,p.getY()-17, this));
 
 				}
 				if(Player.selectedCharacter == 2){
-					Controller.projectiles.add(new FennelBullet(p.getX()-5,p.getY()-17, this));
-					Controller.projectiles.add(new FennelBullet(p.getX()+5,p.getY()-17, this));
+					Controller.pprojectiles.add(new FennelBullet(p.getX()-5,p.getY()-17, this));
+					Controller.pprojectiles.add(new FennelBullet(p.getX()+5,p.getY()-17, this));
 
 				}
 				if(Player.selectedCharacter == 3){
-					Controller.projectiles.add(new PlayerBullet(p.getX(),p.getY(), this));
-					Controller.projectiles.add(new PerditusBullet1(p.getX()-5,p.getY()-17, this));
-					Controller.projectiles.add(new PerditusBullet2(p.getX()+5,p.getY()-17, this));
+					Controller.pprojectiles.add(new PlayerBullet(p.getX(),p.getY(), this));
+					Controller.pprojectiles.add(new PerditusBullet1(p.getX()-5,p.getY()-17, this));
+					Controller.pprojectiles.add(new PerditusBullet2(p.getX()+5,p.getY()-17, this));
 
 				}
 				shooting = true;
@@ -682,6 +749,9 @@ public class Game extends Canvas implements Runnable {
 					Music.playBullet();
 				}
 			}	
+			/**
+			 * If the player presses the "Z" key, a bomb will be used, killing all enemies on screen
+			 */
 			else if (key == KeyEvent.VK_Z){
 				if (Player.bombs > 0){
 					Player.bombs --;
@@ -693,40 +763,50 @@ public class Game extends Canvas implements Runnable {
 					}
 				}
 			}	
+			/**
+			 * If the player presses the "X" key, the selected character will shoot with their
+			 * specified bullets, in a constant line.
+			 */
 			else if (key == KeyEvent.VK_X){
 				stopSpray = false;
 				timeofX = System.currentTimeMillis();
-				if (stopSpray == false){
-					if(Player.selectedCharacter == 1){
-						Controller.projectiles.add(new OttoBullet(p.getX()-5,p.getY()+20, this));
-						Controller.projectiles.add(new OttoBullet(p.getX()+5,p.getY()+20, this));
+				if(Player.selectedCharacter == 1){
+					Controller.pprojectiles.add(new OttoBullet(p.getX()-5,p.getY()+20, this));
+					Controller.pprojectiles.add(new OttoBullet(p.getX()+5,p.getY()+20, this));
 
-					}
-					if(Player.selectedCharacter == 2){
-						Controller.projectiles.add(new FennelBullet(p.getX()-5,p.getY()+20, this));
-						Controller.projectiles.add(new FennelBullet(p.getX()+5,p.getY()+20, this));
-
-					}
-					if(Player.selectedCharacter == 3){
-						Controller.projectiles.add(new PlayerBullet(p.getX(),p.getY()+20, this));
-						Controller.projectiles.add(new PerditusBullet1(p.getX()-5,p.getY()+20, this));
-						Controller.projectiles.add(new PerditusBullet2(p.getX()+5,p.getY()+20, this));
-
-					}
-					stopSpray = true;
 				}
-				else{
-					if (System.currentTimeMillis()- timeofX > 10000){
-						stopSpray = false;
-					}
+				if(Player.selectedCharacter == 2){
+					Controller.pprojectiles.add(new FennelBullet(p.getX()-5,p.getY()+20, this));
+					Controller.pprojectiles.add(new FennelBullet(p.getX()+5,p.getY()+20, this));
+
+				}
+				if(Player.selectedCharacter == 3){
+					Controller.pprojectiles.add(new PlayerBullet(p.getX(),p.getY()+20, this));
+					Controller.pprojectiles.add(new PerditusBullet1(p.getX()-5,p.getY()+20, this));
+					Controller.pprojectiles.add(new PerditusBullet2(p.getX()+5,p.getY()+20, this));
+
 				}
 
-			}	
+
+			}
+
+			/**
+			 * If the player presses "escape" key or "backspace" key, the game will set state to 
+			 * "PAUSE" and pause the game.
+			 */
 			else if (key == KeyEvent.VK_BACK_SPACE&&paused == false||key == KeyEvent.VK_ESCAPE &&paused == false){
 				Game.State = Game.STATE.PAUSE;
 				paused = true;
 			}
-		}	
+		}
+
+
+
+		/**
+		 * Allows the game to test if the iconic Konami cheatcode (Up, up, down, down, left, right,
+		 * left, right, B, A) is pressed, and modifies the game into it's "Konami" state if the user
+		 * inputs the sprite correctly.
+		 */
 		if (State == STATE.MENU){
 			System.out.println(key);
 

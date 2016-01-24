@@ -6,7 +6,8 @@ import java.util.LinkedList;
 
 public class Controller {
 	
-	static ArrayList<Bullet> projectiles = new ArrayList<Bullet>();
+	static ArrayList<EnemyBullet> eprojectiles = new ArrayList<EnemyBullet>();
+	static ArrayList<PlayerBullet> pprojectiles = new ArrayList<PlayerBullet>();
 
 	Bullet TempBullet;
 	
@@ -19,8 +20,18 @@ public class Controller {
 	}
 	
 	public void tick(){
-		for (int i = 0; i<projectiles.size(); i++){
-			TempBullet = projectiles.get(i);
+		for (int i = 0; i<eprojectiles.size(); i++){
+			TempBullet = eprojectiles.get(i);
+
+			//destroys bullet once its off the screen
+			if(TempBullet.getY() <0){
+				removeBullet(TempBullet);
+			}
+
+			TempBullet.tick();
+		}
+		for (int i = 0; i<pprojectiles.size(); i++){
+			TempBullet = pprojectiles.get(i);
 
 			//destroys bullet once its off the screen
 			if(TempBullet.getY() <0){
@@ -32,18 +43,26 @@ public class Controller {
 	}
 
 	public void render (Graphics g){
-		for (int i = 0; i<projectiles.size(); i++){
-			TempBullet = projectiles.get(i);
+		for (int i = 0; i<eprojectiles.size(); i++){
+			TempBullet = eprojectiles.get(i);
+			
+			TempBullet.render(g);
+		}
+		for (int i = 0; i<pprojectiles.size(); i++){
+			TempBullet = pprojectiles.get(i);
 			
 			TempBullet.render(g);
 		}
 	}
 	
 	public void addBullet (Bullet block){
-		projectiles.add(block);
+		eprojectiles.add((EnemyBullet) block);
+		pprojectiles.add((PlayerBullet) block);
 	}
 	public void removeBullet(Bullet block){
-		projectiles.remove(block);
+		eprojectiles.remove(block);
+		pprojectiles.remove(block);
+
 	}
 	
 	
