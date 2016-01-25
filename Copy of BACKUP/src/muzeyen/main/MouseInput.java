@@ -129,15 +129,14 @@ public class MouseInput implements MouseListener {
 		
 	}
 	@Override
+	/**
+	 *Checks if the mouse has been pressed over a variety of different situations
+	 */
 	public void mousePressed(MouseEvent e) {
 		int mx = e.getX();
 		int my = e.getY();
 		// TODO Auto-generated method stub
-		/**
-    public  Rectangle playButton = new Rectangle(500,200, 200, 50);
-	public  Rectangle settingsButton = new Rectangle(500,300, 200, 50);
-	public  Rectangle quitButton = new Rectangle(500,400, 200, 50);
-		 */
+
 		if (Game.State == STATE.MENU){
 			if(mx >= 460 && mx <= 700){
 				if(my >= 200 && my <= 250){
@@ -160,11 +159,11 @@ public class MouseInput implements MouseListener {
 				}
 			}
 		}
-		if (Game.State == STATE.GAMEOVER){
-			if(mx >= 460 && mx <= 700){
+		if (Game.State == STATE.GAMEOVER){//If the game's state is "GAMEOVER"
+			if(mx >= 460 && mx <= 700){//And if the cursor is in the correct x and y input
 				if(my >= 200 && my <= 250){
 					//Pressed Play button
-					Game.State = Game.STATE.GAME;
+					Game.State = Game.STATE.GAME;//it will allow you to play the game again.
 				}
 			}
 			if (Game.konami == false){

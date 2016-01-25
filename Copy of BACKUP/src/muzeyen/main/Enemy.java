@@ -14,7 +14,9 @@ public class Enemy extends MovingObject {
 		super (x,y,xSpeed,ySpeed,right,bottom);
 		
 	}
-
+	/**
+	 *Sets the Enemy's sprite based off of what the subclasses define
+	 */
 	public void setSprite(int x, int y, int sizex, int sizey){
 		SpriteSheet ss = new SpriteSheet(Game.getSpriteSheet());
 		enemy = ss.grabImage(x, y, sizex, sizey);
@@ -23,8 +25,9 @@ public class Enemy extends MovingObject {
 	public void render(Graphics g) {
 		g.drawImage(enemy, (int)getX(), (int)getY(), null);
 	}
-
-
+	/**
+	 *When called, it checks if any bullets have collides with enemies in the enemy arrays
+	 */
 	public boolean bulletcollisionTest(ArrayList<PlayerBullet> pprojectiles){
 
 		for(int j = 0; j< pprojectiles.size(); j++){

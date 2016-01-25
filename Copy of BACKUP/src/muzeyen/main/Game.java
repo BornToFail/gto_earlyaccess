@@ -487,7 +487,7 @@ public class Game extends Canvas implements Runnable {
 
 	}
 	/**
-	 *Checks if the time is an interval of 5, if it is, the amount of enemies spawned in increases
+	 *Checks if the time is an interval of 5 seconds, if it is, the amount of enemies spawned in increases
 	 */
 	private void increaseDifficulty(){
 		if ((hudTimer%500)  == 0){
@@ -546,7 +546,7 @@ public class Game extends Canvas implements Runnable {
 			b.render(g);
 			testC.render(g);
 
-		}else if (State == STATE.CUTSCENE_1){
+		}else if (State == STATE.CUTSCENE_1){ //If the game is in the first cutscene state
 			g.drawImage(image, 0, 0, getWidth(), getHeight(), this);
 			g.drawImage(background, 0, 0, null);
 			g.drawImage(hudRight, 500, 0, null);
