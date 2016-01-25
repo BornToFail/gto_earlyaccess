@@ -425,7 +425,9 @@ public class Game extends Canvas implements Runnable {
 			frames++;
 			if (State == STATE.GAME){
 				increaseDifficulty();
-				Boss.GoBoss();
+				if (HUD.score == 120){ //Boss appears after score hits 120
+					Boss.GoBoss();
+				}				
 				p.playercollisionTest(passiveSpawner, Controller.eprojectiles);
 				p.playercollisionTest2(aggressiveSpawner);
 
