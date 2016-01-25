@@ -34,8 +34,11 @@ public class Boss /*implements Runnable,*/ extends MovingObject {
 	private int right;
 	private int top;
 	private int bottom;
+	private static int bossHit;
 	
 	private boolean move;
+	
+	public long timeOfShot;
 	
 	
 	private static BufferedImage boss;
@@ -53,6 +56,7 @@ public class Boss /*implements Runnable,*/ extends MovingObject {
 	
 	
 	public static void GoBoss(){
+		bossHit = 0;
 		Difficulty();
 		setXSpeed(1, 0.5);
 		setYSpeed(1, 0.5);
@@ -136,29 +140,43 @@ public class Boss /*implements Runnable,*/ extends MovingObject {
 	}
 	
 	
-	private static void FireAway(){
+	/*private void FireAway(){
+		if (shooting = true){ //slows down player when boss shoots
+			timeOfShot = System.currentTimeMillis();
+			Player.setVelX((Player.velX)*0.20);
+			Player.setVelY((Player.velY)*0.20);
+		}
+		if (System.currentTimeMillis()- timeOfShot > 2000){ //returns player to normal speed 
+			Player.setVelX(1);
+			Player.setVelY(1);
+			
+		}
 		
-		/*if (shooting = true){
-			Player.setVelX((Player.velX)*0.2);
-			Player.setVelY((Player.velY)*0.2);			
-		}*/
 		
 		
-	}
+	}*/
 	
 	public void BossHit(ArrayList <Bullet> Bullets){
 		for(int j = 0; j< Controller.pprojectiles.size(); j++){
 			double distance = Math.sqrt(Math.pow(Bullets.get(j).getX()- this.getX(),2) + Math.pow(this.getY()-Bullets.get(j).getY(),2));
 			if (distance < 8){
-				//Game.passiveSpawner.remove(i);
 				Controller.pprojectiles.remove(j);
 				System.out.print("Boss hit");
 				HUD.score += 10;
+				bossHit++;
+			}
+			if (bossHit > 10){
+				setXSpeed(xSpeed, 0);
+				setYSpeed(ySpeed, 0);
+				seeBoss = false;
+				setSprite(seeBoss);
+				
 			}
 		}
-		FireAway();
+		//FireAway();
 	}
 	
+		
 	public void wallCollision(){
 		if (this.getX() >= 400 )
 			setXSpeed(xSpeed, -1);
@@ -205,4 +223,3 @@ public class Boss /*implements Runnable,*/ extends MovingObject {
 	}
 }
 
-//Boss Behavior Game Class Line 155 & 191
