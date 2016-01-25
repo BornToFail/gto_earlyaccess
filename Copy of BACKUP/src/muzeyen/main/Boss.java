@@ -15,11 +15,11 @@ import muzeyen.main.Game.STATE;
 
 /**
  * @author 342643103
- *
+ * Class incomplete
  */
 
 
-public class Boss /*implements Runnable,*/ extends MovingObject {
+public class Boss extends MovingObject implements Runnable {
 	/**
 	 * 
 	 */
@@ -50,14 +50,27 @@ public class Boss /*implements Runnable,*/ extends MovingObject {
 			
 	}
 */	
+	/**
+	 * 
+	 * @param x
+	 * @param y
+	 * @param xSpeed
+	 * @param ySpeed
+	 * @param right
+	 * @param top
+	 */
 	public Boss (double x, double y, double xSpeed, double ySpeed, int right, int top) {
 		super (x,y,xSpeed,ySpeed,right,top);
 	}
 	
 	
+	/**
+	 * Primary method for the Boss levels
+	 */
 	public static void GoBoss(){
+		seeBoss = false;
 		bossHit = 0;
-		Difficulty();
+		Difficulty(); //calls method to determine difficulty
 		setXSpeed(1, 0.5);
 		setYSpeed(1, 0.5);
 		setSprite(seeBoss);
@@ -68,7 +81,10 @@ public class Boss /*implements Runnable,*/ extends MovingObject {
 	}
 	
 	
-	
+	/**
+	 * Sets the difficulty with
+	 * boss speeds
+	 */
 	public static void Difficulty(){
 		/*The difficulty method is used to 
 		 * determine the speeds of the boss
@@ -85,8 +101,18 @@ public class Boss /*implements Runnable,*/ extends MovingObject {
 			}
 		}
 	}
-			
+	
+	/**
+	 * 
+	 * @param sB
+	 */
 	public static void setSprite(boolean sB){
+		/*Uses a boolean to determine 
+		 * whether boss is visible or not
+		 * while the game is running.
+		 * Also sets the image for 
+		 * boss using spritesheets
+		 */
 		SpriteSheet ss = new SpriteSheet(Game.getSpriteSheet());
 		if (sB = false){
 			boss = ss.grabImage(10, 10, 32, 32);
@@ -98,45 +124,94 @@ public class Boss /*implements Runnable,*/ extends MovingObject {
 		
 	}
 	
+	/**
+	 * 
+	 */
 	public void tick(){
 		setX(getX() + getXSpeed());
 		setY(getY() + getYSpeed());
 	}
 	
+	/**
+	 * 
+	 * @param g
+	 */
 	public void render(Graphics g) {
 		g.drawImage(boss,200, 200, null);
 	}
 	
+	/**
+	 * 
+	 */
 	public double getX(){
 		return x;
 	}
 	
+	/**
+	 * 
+	 */
 	public double getY(){
 		return y;
 	}
 	
+	/**
+	 * 
+	 */
 	public void setX(double x){
 		this.x = x;
 	}
 	
+	/**
+	 * 
+	 */
 	public void setY(double y){
 		this.y = y;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public static double getXSpeed(){
 		return xSpeed;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public static double getYSpeed(){
 		return ySpeed;
 	}
 	
+	/**
+	 * 
+	 * @param xSpeed
+	 * @param rate
+	 */
 	public static void setXSpeed(double xSpeed, double rate){
 		xSpeed = xSpeed*rate;
+		/*Modified set speed method 
+		 * takes a double as the rate
+		 * for which the speed is
+		 * multiplied when the 
+		 * method is called
+		 */		
 	}
 	
+	/**
+	 * 
+	 * @param ySpeed
+	 * @param rate
+	 */
 	public static void setYSpeed(double ySpeed, double rate){
 		ySpeed = ySpeed*rate;
+		/*Modified set speed method 
+		 * takes a double as the rate
+		 * for which the speed is
+		 * multiplied when the 
+		 * method is called
+		 */		
 	}
 	
 	
@@ -156,6 +231,11 @@ public class Boss /*implements Runnable,*/ extends MovingObject {
 		
 	}*/
 	
+	/**
+	 * Detects boss hits by player 
+	 * and adds points to high score
+	 * @param Bullets
+	 */
 	public void BossHit(ArrayList <Bullet> Bullets){
 		for(int j = 0; j< Controller.pprojectiles.size(); j++){
 			double distance = Math.sqrt(Math.pow(Bullets.get(j).getX()- this.getX(),2) + Math.pow(this.getY()-Bullets.get(j).getY(),2));
@@ -176,7 +256,9 @@ public class Boss /*implements Runnable,*/ extends MovingObject {
 		//FireAway();
 	}
 	
-		
+	/**
+	 * 	Detects walls for the boss
+	 */
 	public void wallCollision(){
 		if (this.getX() >= 400 )
 			setXSpeed(xSpeed, -1);
@@ -188,7 +270,9 @@ public class Boss /*implements Runnable,*/ extends MovingObject {
 		
 	}
 	
-		
+	/**
+	 * 	
+	 */
 	public void run() {
 		while (move) {
 			x += xSpeed;
