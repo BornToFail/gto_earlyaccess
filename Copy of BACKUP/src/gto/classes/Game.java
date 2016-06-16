@@ -10,14 +10,17 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
@@ -225,7 +228,7 @@ public class Game extends Canvas implements Runnable {
 			e.printStackTrace();	
 		}
 		try{
-			BufferedReader reader = new BufferedReader(new FileReader("res/highscore.txt"));
+			BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/highscore.txt"), StandardCharsets.UTF_8));
 			String text = null;
 			while ((text = reader.readLine())!= null){
 				tempScore = text.split(" ");
